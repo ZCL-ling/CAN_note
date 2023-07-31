@@ -9,6 +9,7 @@ from mainwindow import MainWindow
 
 """PySide6 port of the CAN example from Qt v6.x"""
 
+# QCoreApplication类是一个核心应用程序类，用于在PySide6应用程序中处理事件循环和系统事件。
 
 if __name__ == "__main__":
     QLoggingCategory.setFilterRules("qt.canbus* = true")
