@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QDialog
 
 from ui_canbusdeviceinfodialog import Ui_CanBusDeviceInfoDialog
 
-#用于显示CAN总线设备信息对话框
+#用于显示CAN总线设备信息 对话框
 class CanBusDeviceInfoDialog(QDialog):
 
     def __init__(self, info, parent):#构造函数
