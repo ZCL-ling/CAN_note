@@ -3444,9 +3444,6 @@ qt_resource_struct = b"\
 \x00\x00\x01\x89\xa9\xfc\x16[\
 "
 
-# 这是一段在 Qt（一个创建图形界面的跨平台软件开发框架）应用程序中使用的代码。
-# Qt 允许开发者将资源（如图片、音频文件、翻译文件等）集成到可执行文件中，从而更方便地管理和使用这些资源。
-
 def qInitResources():
     QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
 
@@ -3454,19 +3451,3 @@ def qCleanupResources():
     QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
 
 qInitResources()
-
-# qInitResources() 是一个注册函数，用于注册 Qt 资源文件。
-# 在一般的 Qt 应用程序中，资源文件是以二进制的形式嵌入在程序之内的。
-# 在程序运行时，qInitResources() 通过调用 QtCore.qRegisterResourceData() 对这些嵌入的资源文件进行注册，
-# 注册后的资源文件可以通过一个唯一的 URL 进行访问。其中，
-#   0x03 是注册该资源的二进制版本，
-#   qt_resource_struct 是资源的结构，
-#   qt_resource_name 是资源的名称，
-#   qt_resource_data 表示实际的资源数据。
-
-# 相对应的，
-# qCleanupResources() 是一个注销函数，用于注销 Qt 资源文件，以释放相关的内存资源。
-# 它通过调用 QtCore.qUnregisterResourceData() 来完成资源文件的注销工作，参数与 qRegisterResourceData() 相同。
-
-# 一般情况下，qInitResources() 会在程序启动时调用，而 qCleanupResources() 则会在程序准备退出时调用
- # qInitResources() 会将一些资源文件嵌入到你的程序中，使你的程序可以在运行时访问这些资源。
