@@ -3,7 +3,7 @@
 
 from enum import IntEnum
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt    
 
 # QAbstractTableModel 可创建自定义的表格类型
 # QModelIndex 访问和操作表格模型中的数据
@@ -12,6 +12,8 @@ from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 # 枚举类，每个成员对应表格模型的一个列。
 # 通过为每个列分配一个唯一的整数值，可以在代码中使用这些列进行 索引、访问和控制。
 
+# 可以通过ReceivedFramesModelColumns.number、ReceivedFramesModelColumns.timestamp等方式来引用其中的成员。
+# 有助于 提高代码的可读性
 class ReceivedFramesModelColumns(IntEnum):
     number = 0
     timestamp = 1
@@ -21,6 +23,13 @@ class ReceivedFramesModelColumns(IntEnum):
     data = 5
     count = 6
 
+# Qt框架定义了一系列的标准角色，如Qt.DisplayRole，Qt.EditRole等，每个角色都有一个特定的预定义值。除此之外，也可以定义自定义角色。
+# 自定义角色的值必须从Qt.UserRole开始，这个值为32。
+# 所以在 clipboard_text_role = Qt.UserRole + 1中，clipboard_text_role的值就是33。
+
+# 这个自定义的clipboard_text_role角色去 存储或者获取 与剪贴板相关的数据。
+# 例如，你可以使用QStandardItem.setData(value, clipboard_text_role)来设置数据，
+# 然后使用QStandardItem.data(clipboard_text_role)来获取数据。
 
 clipboard_text_role = Qt.UserRole + 1
 
@@ -39,19 +48,22 @@ class ReceivedFramesModel(QAbstractTableModel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.m_framesQueue = []  # QQueue() 用于存储表格模型中的行
-        self.m_framesAccumulator = [] 
+        self.m_framesQueue = []  # 列表，用于存储表格模型中的 行
+        self.m_framesAccumulator = [] # 列表，用于累积 或 暂存 某些数据
         self.m_queueLimit = 0 # 用于限制 行（也就是队列 Queue）的大小
 
 
     # 删除指定行数的数据
     # row:要删除的行的起始索引
     # count:删除的行数
-    # parent:在模型中，删除行的负索引
+    # parent:在模型中，删除行的父索引
     def remove_rows(self, row, count, parent):
         self.beginRemoveRows(parent, row, row + count - 1) #开始删除指定行的信号
+        # 发出一个信号，通知视图，一个或多个行将被删除，parent 参数表示这些行的父项，之后两个参数定义了将被删除行的范围。
+        
         self.m_framesQueue = self.m_framesQueue[0:row] + self.m_framesQueue[row + count:] #切片 左闭右开
         # 将m_framesQueue列表 切片 为两部分，并将指定行重新赋值为m_framesQueue.这样就删除了指定的行
+        # 举个实际例子，画图就明白了，例如 row = 4, count = 3,删除row = 4开始的3行
         self.endRemoveRows() #删除行的结束信号
         return True
 
@@ -91,7 +103,7 @@ class ReceivedFramesModel(QAbstractTableModel):
 
     # 获取表格模型中指定索引位置的数据，根据角色来返回不同类型的数据
     # index:获取数据的索引
-    # role：请求不同类型数据的角色，例如：显示数据、对齐方式
+    # role：请求不同类型数据的角色，例如：DisplayRole、SizeHintRole等
     def data(self, index, role):
         if not self.m_framesQueue:
             return None
@@ -101,7 +113,11 @@ class ReceivedFramesModel(QAbstractTableModel):
         # TextAlignmentRole 返回指定列 的对齐方式，column_alignment是一个列表，存储了不同列的对齐方式。
         # DisplayRole 返回 具体的显示数据，m_framesQueue列表中对应索引位置的数据
         # 如果 role 是 clipboard_text_role，则返回剪贴板文本数据，
-        #         对于特定列（ReceivedFramesModelColumns.DLC 列）返回 [数据]，否则返回原始的数据值。
+        #         对于特定列（ReceivedFramesModelColumns.DLC 列）返回 [数据]，否则返回原始的值。
+        
+        # 条件表达式（也称为三元表达式）。如果column的值等于ReceivedFramesModelColumns.DLC，
+        # 那么它就会返回一个字符串，该字符串包含方括号且方括号内为变量f指向的值，否则它就会直接返回f的值
+
         # 如果 role 是其他值，则返回 None
         if role == Qt.TextAlignmentRole:
             return column_alignment[index.column()]
