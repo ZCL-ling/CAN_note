@@ -12,15 +12,52 @@ from ui_mainwindow import Ui_MainWindow
 from receivedframesmodel import ReceivedFramesModel
 
 
+# 如果 frame 具有 hasBitrateSwitch 和 hasLocalEcho 属性，
+# 那么调用 frame_flags(frame) 将返回字符串 " BL- "。
+
+# 该字符串表示 frame 具有比特率切换和本地回显的标志。
 def frame_flags(frame):
     result = " --- "
     if frame.hasBitrateSwitch():
-        result[1] = 'B'
+        result[1] = 'B' # (就是区分CAN 还是 CAN-FD)
     if frame.hasErrorStateIndicator():
-        result[2] = 'E'
+        result[2] = 'E' # 通过错误状态指示器来提醒通信节点发现问题
     if frame.hasLocalEcho():
-        result[3] = 'L'
+        result[3] = 'L' # 输入后 立即看到屏幕显示（默认开启，但 在输入敏感信息（如密码）时，为了安全性考虑（可能会被禁用）
     return result
+# 比特率切换是一种在 CAN 网络中改变通信速率的机制。
+# 通过比特率切换，可以调整数据传输的速度，以适应不同的应用场景和要求。
+# hasBitrateSwitch() 方法用于判断 CAN 报文是否具有比特率切换。(就是区分CAN 还是 CAN-FD)
+# 如果报文具有比特率切换功能，那么该方法会返回 True；否则，返回 False。
+# 在CAN网络中，比特率是指数据传输的速度，通常以每秒位数(bps)表示。比特率越高，数据传输速度越快。
+# 然而，某些CAN设备可能不支持高比特率，而且高比特率也可能会增加通信错误的概率。
+# 因此，CAN系统通常需要在不同的比特率之间进行切换以适应特定的设备和通信条件。
+# Bitrate switching在CAN-FD（Flexible Data-Rate）当中有着重要的应用。
+# CAN-FD是CAN总线的一种改进和扩展，它允许数据帧的比特率独立调整，以支持高达 8Mbps的数据传输速度，
+# 这个功能就依赖于比特率切换。
+# 在CAN-FD中，一次CAN通信可能会分为两部分：仲裁位(arbitration bits)仍使用经典CAN的略低的比特率来保证网络的兼容性，
+# 而数据位（data bits）则使用更高的比特率进行高速数据传输。由仲裁位到数据位的比特率切换，便是bitrate switch的实现。
+
+
+
+# 错误状态指示器是一种机制，用于指示 CAN 网络中的错误情况。
+# 当网络发生错误时，比如总线仲裁错误、数据帧丢失等，可以通过错误状态指示器来提醒通信节点发现问题。
+# hasErrorStateIndicator() 方法用于判断 CAN 报文是否具有错误状态指示器。
+# 如果报文具有错误状态指示器，那么该方法会返回 True；否则，返回 False
+
+# 本地回显是一种通信机制，其中发送的数据帧将在发送节点本地被复制并返回。
+# 这样，发送节点就可以在不等待其他节点确认的情况下立即知道数据是否被成功接收。
+# hasLocalEcho() 方法用于判断 CAN 报文是否启用了本地回显。
+# 如果启用了本地回显，那么该方法会返回 True；否则，返回 False。
+# 使用本地回显可以提高通信的可靠性和效率，但也会增加总线上的数据流量。
+# 本地回显是指当用户在终端上输入字符时，终端会将输入的字符显示出来，以便用户可以看到自己所输入的内容。
+# 这种功能使用户能够立即看到他们输入的字符，以便进行及时的检查和确认。
+# 例如，在终端上输入 "hello"，本地回显会将每个键入的字符显示在光标位置。
+# 这样，用户就可以立即看到屏幕上显示的 "h"、"e"、"l"、"l"、"o"。
+# 本地回显是终端的默认行为，并且通常是默认启用的。
+# 但在某些情况下，可能需要禁用本地回显，
+# 尤其是在输入敏感信息（如密码）时，为了安全性考虑，不希望在终端屏幕上显示这些字符。
+# 总结：本地回显是终端在用户键入字符时将其显示在屏幕上的功能。
 
 
 def show_help():
@@ -35,7 +72,8 @@ class MainWindow(QMainWindow):
         super().__init__(parent)  # 调用父类的构造函数
         self.m_ui = Ui_MainWindow()
         # 创建Ui_MainWindow对象并将其赋值给self.m_ui
-        # 表示使用一个名为Ui_MainWindow的UI界面设计，该设计在setupUi()方法中，将界面元素与类的属性进行关联
+        # 表示使用一个名为Ui_MainWindow的UI界面设计，该设计在setupUi()方法中，
+        # 将界面元素与类的属性进行关联
 
         # 初始化一些计数器和属性
         self.m_number_frames_written = 0
@@ -87,7 +125,7 @@ class MainWindow(QMainWindow):
         # 信号连接,目的是 将交互界面的操作与对应方法进行关联,从而实现对应操作的功能.
         # 每个连接的方法或函数在相应操作被触发是执行相应逻辑
         self.m_ui.sendFrameBox.send_frame.connect(self.send_frame)
-        # 将send_frame信号与send_frame方法(括号里面)连接(connect)起来，当send_frameBox中的发送按钮被点击时触发。
+        # 将send_frame信号与send_frame函数(括号里面)连接(connect)起来，当send_frameBox中的发送按钮被点击connect时触发。
         self.m_ui.actionConnect.triggered.connect(self._action_connect)
         # 将actionConnect的triggered信号与_action_connect方法连接(connect)，当actionConnect被触发时执行。
         # _action_connect方法名，签名带有下划线_，表示是类的 私有方法，不应该 在类外部直接调用。需要在实现的类中定义这些方法
@@ -190,14 +228,14 @@ class MainWindow(QMainWindow):
             self.m_ui.actionDisconnect.setEnabled(True)
             self.m_ui.actionDeviceInformation.setEnabled(True)
             self.m_ui.sendFrameBox.setEnabled(True)
-            # 如果连接成功，则禁用 连接connect 界面部件，启用 断开Disconnect连接、设备信息DevInfo、发送帧 的界面部件。
+            # 如果连接成功，则禁用connect界面部件，启用Disconnect连接、设备信息DevInfo、发送帧sendFrameBox的界面部件。
             config_bit_rate = self.m_can_device.configurationParameter(QCanBusDevice.BitRateKey) # 获取配置参数中的比特率信息
             if config_bit_rate > 0:
                 is_can_fd = bool(self.m_can_device.configurationParameter(QCanBusDevice.CanFdKey)) #是否是CAN_FD
                 config_data_bit_rate = self.m_can_device.configurationParameter(QCanBusDevice.DataBitRateKey)
-                bit_rate = config_bit_rate / 1000
-                if is_can_fd and config_data_bit_rate > 0:
-                    data_bit_rate = config_data_bit_rate / 1000
+                bit_rate = config_bit_rate / 1000 # 因为后面的单位是kbps 所以这个地方/1000
+                if is_can_fd and config_data_bit_rate > 0: # 如果是CANFD 且 有config_data_bit_rate
+                    data_bit_rate = config_data_bit_rate / 1000 # bps ->kbps
                     m = f"Plugin: {p.plugin_name}, connected to {p.device_interface_name} at {bit_rate} / {data_bit_rate} kBit/s"
                     self.m_status.setText(m) # 设置状态栏文本
                 else:
@@ -207,7 +245,7 @@ class MainWindow(QMainWindow):
                 self.m_status.setText(f"Plugin: {p.plugin_name}, connected to {p.device_interface_name}")
 
             if self.m_can_device.hasBusStatus(): # 如果m_can_device具有总线状态
-                self.m_busStatusTimer.start(2000) # 启动m_busStatusTimer定时器以每 2秒 更新总线状态
+                self.m_busStatusTimer.start(2000) # 启动m_busStatusTimer定时器以每2秒 更新总线状态
             else:
                 self.m_ui.busStatus.setText("No CAN bus status available.")
 
@@ -262,6 +300,7 @@ class MainWindow(QMainWindow):
         self.m_connect_dialog.close() # 关闭连接对话框m_connect_dialog
         event.accept() # 调用event.accept()来接受关闭事件
 
+   # 处理收到的帧，这个比较重要 可用 序号、时间戳、flag、CAN-ID、DLC、Data
     @Slot()
     def process_received_frames(self):
         if not self.m_can_device:
@@ -281,9 +320,9 @@ class MainWindow(QMainWindow):
             time = f"{secs:>10}.{microsecs:0>4}"  # 格式化为字符串，秒数占据10个字符的宽度，微秒数占据4个字符的宽度
             flags = frame_flags(frame) #  获取frame的标志
 
-            id = f"{frame.frameId():x}" # 在 f-string 中，我们可以使用冒号:来指定格式化选项
+            id = f"{frame.frameId():x}" # 在 f-string 中，我们可以使用冒号:来指定格式化选项,x 表示16进制
             dlc = f"{frame.payload().size()}"
-            frame = [f"{self.m_number_frames_received}", time, flags, id, dlc, data]
+            frame = [f"{self.m_number_frames_received}", time, flags, id, dlc, data] 
             self.m_model.append_frame(frame)
             # 获取帧ID的十六进制表示并赋值给id变量。
             # 获取帧的数据长度，并赋值给dlc变量。
