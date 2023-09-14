@@ -14,10 +14,12 @@ class Settings():
         self.plugin_name = ""
         self.device_interface_name = ""
         self.configurations = []
-        self.use_configuration_enabled = False
-        self.use_model_ring_buffer = True
-        self.model_ring_buffer_size = 1000
-        self.use_autoscroll = False
+        # self.use_configuration_enabled = False
+        # self.use_model_ring_buffer = True
+        # self.model_ring_buffer_size = 1000
+        # self.use_autoscroll = False
+        self.use_configuration_enabled = True
+        self.use_autoscroll = True
         # 环形缓冲区 一种数据结构
         # 环形缓冲区的特点是，它在逻辑上形成一个环，一旦数据填满了缓冲区，再继续添加新的数据会从缓冲区的开始处覆盖掉旧的数据。
         # 因此，环形缓冲区总是保存了 最新的 一定量的数据。
@@ -36,19 +38,20 @@ class ConnectDialog(QDialog):
         self.m_ui = Ui_ConnectDialog()
         self.m_currentSettings = Settings()
         self.m_interfaces = []
-        self.m_settings = QSettings("QtProject", "CAN example")
+        # self.m_settings = QSettings("QtProject", "CAN example")
+        self.m_settings = QSettings("QtProject", "CAN message")
         self.m_ui.setupUi(self)
 
-        self.m_ui.errorFilterEdit.setValidator(QIntValidator(0, 0x1FFFFFFF, self))
+        # self.m_ui.errorFilterEdit.setValidator(QIntValidator(0, 0x1FFFFFFF, self))
         
         # 下拉列表框loopbackBox、receiveOwnBox、canFdBox
-        self.m_ui.loopbackBox.addItem("unspecified") # "unspecified" 对应的值默认为 None
-        self.m_ui.loopbackBox.addItem("False", False) # addItem 方法有两个参数，第一个参数是要显示在下拉列表框中的文本，第二个参数是这个文本所代表的实际值。
-        self.m_ui.loopbackBox.addItem("True", True)
+        # self.m_ui.loopbackBox.addItem("unspecified") # "unspecified" 对应的值默认为 None
+        # self.m_ui.loopbackBox.addItem("False", False) # addItem 方法有两个参数，第一个参数是要显示在下拉列表框中的文本，第二个参数是这个文本所代表的实际值。
+        # self.m_ui.loopbackBox.addItem("True", True)
 
-        self.m_ui.receiveOwnBox.addItem("unspecified") # "unspecified" 对应的值默认为 None。
-        self.m_ui.receiveOwnBox.addItem("False", False)
-        self.m_ui.receiveOwnBox.addItem("True", True)
+        # self.m_ui.receiveOwnBox.addItem("unspecified") # "unspecified" 对应的值默认为 None。
+        # self.m_ui.receiveOwnBox.addItem("False", False)
+        # self.m_ui.receiveOwnBox.addItem("True", True)
 
         self.m_ui.canFdBox.addItem("False", False)
         self.m_ui.canFdBox.addItem("True", True)
@@ -72,12 +75,15 @@ class ConnectDialog(QDialog):
         # "toggled" 是一个信号,在对应的 GUI 元素（例如复选框或者开关按钮）的状态被切换时发出。
         self.m_ui.pluginListBox.currentTextChanged.connect(self.plugin_changed)
         self.m_ui.interfaceListBox.currentTextChanged.connect(self.interface_changed)
-        self.m_ui.ringBufferBox.stateChanged.connect(self._ring_buffer_changed)
+        # self.m_ui.ringBufferBox.stateChanged.connect(self._ring_buffer_changed)
 
-        self.m_ui.rawFilterEdit.hide()
-        self.m_ui.rawFilterLabel.hide()
+        # self.m_ui.rawFilterEdit.hide()
+        # self.m_ui.rawFilterLabel.hide()
 
-        self.m_ui.pluginListBox.addItems(QCanBus.instance().plugins())
+        # self.m_ui.pluginListBox.addItems(QCanBus.instance().plugins())
+        plugins = QCanBus.instance().plugins()
+        selected_plugins = [plugin for plugin in plugins if plugin in ['peakcan', 'vectorcan']]
+        self.m_ui.pluginListBox.addItems(selected_plugins)
 
         self.restore_settings()
 
@@ -100,8 +106,8 @@ class ConnectDialog(QDialog):
         qs.setValue("PluginName", self.m_currentSettings.plugin_name)
         qs.setValue("DeviceInterfaceName", cur.device_interface_name)
         qs.setValue("UseAutoscroll", cur.use_autoscroll)
-        qs.setValue("UseRingBuffer", cur.use_model_ring_buffer)
-        qs.setValue("RingBufferSize", cur.model_ring_buffer_size)
+        # qs.setValue("UseRingBuffer", cur.use_model_ring_buffer)
+        # qs.setValue("RingBufferSize", cur.model_ring_buffer_size)
         qs.setValue("UseCustomConfiguration", cur.use_configuration_enabled)
 
         if cur.use_configuration_enabled:
@@ -130,16 +136,16 @@ class ConnectDialog(QDialog):
         # 如果找不到该设置，则以空字符串("")为默认值，并且设置值将进行str（字符串）类型的转换。
         cur.device_interface_name = qs.value("DeviceInterfaceName", "", str)
         cur.use_autoscroll = qs.value("UseAutoscroll", False, bool)
-        cur.use_model_ring_buffer = qs.value("UseRingBuffer", False, bool)
-        cur.model_ring_buffer_size = qs.value("RingBufferSize", 0, int)
+        # cur.use_model_ring_buffer = qs.value("UseRingBuffer", False, bool)
+        # cur.model_ring_buffer_size = qs.value("RingBufferSize", 0, int)
         cur.use_configuration_enabled = qs.value("UseCustomConfiguration", False, bool)
 
         self.revert_settings()  # 根据程序中代码的设置  更改 用户界面 设置
 
         if cur.use_configuration_enabled: # 如果 开启自定义配置，则从设置中读取更多的参数值，并作为文本设置到相应的UI组件上
-            self.m_ui.loopbackBox.setCurrentText(qs.value("Loopback"))
-            self.m_ui.receiveOwnBox.setCurrentText(qs.value("ReceiveOwn"))
-            self.m_ui.errorFilterEdit.setText(qs.value("ErrorFilter"))
+            # self.m_ui.loopbackBox.setCurrentText(qs.value("Loopback"))
+            # self.m_ui.receiveOwnBox.setCurrentText(qs.value("ReceiveOwn"))
+            # self.m_ui.errorFilterEdit.setText(qs.value("ErrorFilter"))
             self.m_ui.bitrateBox.setCurrentText(qs.value("BitRate"))
             self.m_ui.canFdBox.setCurrentText(qs.value("CanFd"))
             self.m_ui.dataBitrateBox.setCurrentText(qs.value("DataBitRate"))
@@ -210,20 +216,20 @@ class ConnectDialog(QDialog):
         self.m_ui.useConfigurationBox.setChecked(self.m_currentSettings.use_configuration_enabled)
 
         # 将 ringBufferBox、ringBufferLimitBox 和 autoscrollBox 的值设置为当前设置m_currentSettings中的对应值。
-        self.m_ui.ringBufferBox.setChecked(self.m_currentSettings.use_model_ring_buffer)
-        self.m_ui.ringBufferLimitBox.setValue(self.m_currentSettings.model_ring_buffer_size)
+        # self.m_ui.ringBufferBox.setChecked(self.m_currentSettings.use_model_ring_buffer)
+        # self.m_ui.ringBufferLimitBox.setValue(self.m_currentSettings.model_ring_buffer_size)
         self.m_ui.autoscrollBox.setChecked(self.m_currentSettings.use_autoscroll)
 
         # 函数通过调用 configuration_value 方法获取了一些配置的值，然后将这些值设置回到 GUI 界面的相应位置。
         # 需要注意的是，LoopbackKey、ReceiveOwnKey、ErrorFilterKey 这样的配置可能有多个，所以这里使用了循环来处理
-        value = self.configuration_value(QCanBusDevice.LoopbackKey)
-        self.m_ui.loopbackBox.setCurrentText(value)
+        # value = self.configuration_value(QCanBusDevice.LoopbackKey)
+        # self.m_ui.loopbackBox.setCurrentText(value)
 
-        value = self.configuration_value(QCanBusDevice.ReceiveOwnKey)
-        self.m_ui.receiveOwnBox.setCurrentText(value)
+        # value = self.configuration_value(QCanBusDevice.ReceiveOwnKey)
+        # self.m_ui.receiveOwnBox.setCurrentText(value)
 
-        value = self.configuration_value(QCanBusDevice.ErrorFilterKey)
-        self.m_ui.errorFilterEdit.setText(value)
+        # value = self.configuration_value(QCanBusDevice.ErrorFilterKey)
+        # self.m_ui.errorFilterEdit.setText(value)
 
         value = self.configuration_value(QCanBusDevice.BitRateKey)
         self.m_ui.bitrateBox.setCurrentText(value)
@@ -243,8 +249,8 @@ class ConnectDialog(QDialog):
         self.m_currentSettings.use_configuration_enabled = self.m_ui.useConfigurationBox.isChecked()
 
         # 读取“Ring Buffer”、“Ring Buffer Limit”和“Autoscroll”设置项的值，并将这些值存到相应的设置对象中
-        self.m_currentSettings.use_model_ring_buffer = self.m_ui.ringBufferBox.isChecked()
-        self.m_currentSettings.model_ring_buffer_size = self.m_ui.ringBufferLimitBox.value()
+        # self.m_currentSettings.use_model_ring_buffer = self.m_ui.ringBufferBox.isChecked()
+        # self.m_currentSettings.model_ring_buffer_size = self.m_ui.ringBufferLimitBox.value()
         self.m_currentSettings.use_autoscroll = self.m_ui.autoscrollBox.isChecked()
 
         if self.m_currentSettings.use_configuration_enabled:
@@ -253,32 +259,32 @@ class ConnectDialog(QDialog):
             # 然后根据各个设置项的值添加新的配置项。配置项是以元组的形式保存的，元组是 (key, value) 的格式
 
 
-            # process LoopBack
-            if self.m_ui.loopbackBox.currentIndex() != 0:
-                item = (QCanBusDevice.LoopbackKey, self.m_ui.loopbackBox.currentData())
-                self.m_currentSettings.configurations.append(item)
+            # # process LoopBack
+            # if self.m_ui.loopbackBox.currentIndex() != 0:
+            #     item = (QCanBusDevice.LoopbackKey, self.m_ui.loopbackBox.currentData())
+            #     self.m_currentSettings.configurations.append(item)
 
-            # process ReceiveOwnKey
-            if self.m_ui.receiveOwnBox.currentIndex() != 0:
-                item = (QCanBusDevice.ReceiveOwnKey, self.m_ui.receiveOwnBox.currentData())
-                self.m_currentSettings.configurations.append(item)
+            # # process ReceiveOwnKey
+            # if self.m_ui.receiveOwnBox.currentIndex() != 0:
+            #     item = (QCanBusDevice.ReceiveOwnKey, self.m_ui.receiveOwnBox.currentData())
+            #     self.m_currentSettings.configurations.append(item)
 
-            # process error filter
-            error_filter = self.m_ui.errorFilterEdit.text()
-            if error_filter:
-                ok = False
-                try:
-                    int(error_filter)  # check if value contains a valid integer
-                    ok = True
-                except ValueError:
-                    pass
-                if ok:
-                    item = (QCanBusDevice.ErrorFilterKey, error_filter)
-                    self.m_currentSettings.configurations.append(item)
+            # # process error filter
+            # error_filter = self.m_ui.errorFilterEdit.text()
+            # if error_filter:
+            #     ok = False
+            #     try:
+            #         int(error_filter)  # check if value contains a valid integer
+            #         ok = True
+            #     except ValueError:
+            #         pass
+            #     if ok:
+            #         item = (QCanBusDevice.ErrorFilterKey, error_filter)
+            #         self.m_currentSettings.configurations.append(item)
 
-            # process raw filter list
-            if self.m_ui.rawFilterEdit.text():
-                pass  # TODO current ui not sufficient to reflect this param
+            # # process raw filter list
+            # if self.m_ui.rawFilterEdit.text():
+            #     pass  # TODO current ui not sufficient to reflect this param
 
             # process bitrate
             bitrate = self.m_ui.bitrateBox.bit_rate()

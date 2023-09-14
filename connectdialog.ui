@@ -19,7 +19,7 @@
      <item row="0" column="0">
       <widget class="QGroupBox" name="selectPluginBox">
        <property name="title">
-        <string>Select CAN plugin</string>
+        <string>接口卡选项</string>
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
@@ -31,50 +31,11 @@
      <item row="4" column="0" colspan="2">
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
-        <string>GUI Settings</string>
+        <string>GUI 设置</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QCheckBox" name="ringBufferBox">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use ring buffer in table view model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string>Use ring buffer</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="ringBufferLimitBox">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Limit of ring buffer in table view model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="minimum">
-               <number>10</number>
-              </property>
-              <property name="maximum">
-               <number>10000000</number>
-              </property>
-              <property name="singleStep">
-               <number>10</number>
-              </property>
-              <property name="stepType">
-               <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-              </property>
-              <property name="value">
-               <number>1000</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
           <item>
            <widget class="QCheckBox" name="autoscrollBox">
             <property name="toolTip">
@@ -103,89 +64,38 @@
         <bool>false</bool>
        </property>
        <property name="title">
-        <string>Specify Configuration</string>
+        <string>具体配置</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
-         <widget class="QLabel" name="rawFilterLabel">
-          <property name="text">
-           <string>RAW Filter</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="rawFilterEdit">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="errorFilterLabel">
-          <property name="text">
-           <string>Error Filter</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="errorFilterEdit">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="placeholderText">
-           <string>FrameError bits</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="loopbackLabel">
-          <property name="text">
-           <string>Loopback</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="loopbackBox"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="receiveOwnLabel">
-          <property name="text">
-           <string>Receive Own</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="receiveOwnBox"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="bitrateLabel">
-          <property name="text">
-           <string>Bitrate</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
          <widget class="BitRateBox" name="bitrateBox"/>
         </item>
-        <item row="5" column="0">
+        <item row="1" column="0">
          <widget class="QLabel" name="canFdLabel">
           <property name="text">
            <string>CAN FD</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="2" column="1">
+         <widget class="BitRateBox" name="dataBitrateBox"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="bitrateLabel">
+          <property name="text">
+           <string>Bitrate</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
          <widget class="QComboBox" name="canFdBox"/>
         </item>
-        <item row="6" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="dataBitrateLabel">
           <property name="text">
            <string>Data Bitrate</string>
           </property>
          </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="BitRateBox" name="dataBitrateBox"/>
         </item>
        </layout>
       </widget>
@@ -233,7 +143,7 @@
      <item row="1" column="0">
       <widget class="QGroupBox" name="specifyInterfaceNameBox">
        <property name="title">
-        <string>Specify CAN interface name</string>
+        <string>具体接口卡名称</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
@@ -252,7 +162,7 @@
         <bool>true</bool>
        </property>
        <property name="title">
-        <string>CAN Interface Properties</string>
+        <string>CAN接口属性列表</string>
        </property>
       </widget>
      </item>

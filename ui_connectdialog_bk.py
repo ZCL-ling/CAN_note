@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'connectdialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.4.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog,
-    QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-    QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QComboBox,
+    QDialog, QGridLayout, QGroupBox, QHBoxLayout,
+    QLabel, QLineEdit, QPushButton, QSizePolicy,
+    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
 
 from bitratebox import BitRateBox
 from canbusdeviceinfobox import CanBusDeviceInfoBox
@@ -50,6 +50,27 @@ class Ui_ConnectDialog(object):
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.ringBufferBox = QCheckBox(self.groupBox)
+        self.ringBufferBox.setObjectName(u"ringBufferBox")
+        self.ringBufferBox.setChecked(True)
+
+        self.horizontalLayout_2.addWidget(self.ringBufferBox)
+
+        self.ringBufferLimitBox = QSpinBox(self.groupBox)
+        self.ringBufferLimitBox.setObjectName(u"ringBufferLimitBox")
+        self.ringBufferLimitBox.setMinimum(10)
+        self.ringBufferLimitBox.setMaximum(10000000)
+        self.ringBufferLimitBox.setSingleStep(10)
+        self.ringBufferLimitBox.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        self.ringBufferLimitBox.setValue(1000)
+
+        self.horizontalLayout_2.addWidget(self.ringBufferLimitBox)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+
         self.autoscrollBox = QCheckBox(self.groupBox)
         self.autoscrollBox.setObjectName(u"autoscrollBox")
 
@@ -71,35 +92,77 @@ class Ui_ConnectDialog(object):
         self.configurationBox.setEnabled(False)
         self.gridLayout_4 = QGridLayout(self.configurationBox)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.bitrateBox = BitRateBox(self.configurationBox)
-        self.bitrateBox.setObjectName(u"bitrateBox")
+        self.rawFilterLabel = QLabel(self.configurationBox)
+        self.rawFilterLabel.setObjectName(u"rawFilterLabel")
 
-        self.gridLayout_4.addWidget(self.bitrateBox, 0, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.rawFilterLabel, 0, 0, 1, 1)
 
-        self.canFdLabel = QLabel(self.configurationBox)
-        self.canFdLabel.setObjectName(u"canFdLabel")
+        self.rawFilterEdit = QLineEdit(self.configurationBox)
+        self.rawFilterEdit.setObjectName(u"rawFilterEdit")
+        self.rawFilterEdit.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_4.addWidget(self.canFdLabel, 1, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.rawFilterEdit, 0, 1, 1, 1)
 
-        self.dataBitrateBox = BitRateBox(self.configurationBox)
-        self.dataBitrateBox.setObjectName(u"dataBitrateBox")
+        self.errorFilterLabel = QLabel(self.configurationBox)
+        self.errorFilterLabel.setObjectName(u"errorFilterLabel")
 
-        self.gridLayout_4.addWidget(self.dataBitrateBox, 2, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.errorFilterLabel, 1, 0, 1, 1)
+
+        self.errorFilterEdit = QLineEdit(self.configurationBox)
+        self.errorFilterEdit.setObjectName(u"errorFilterEdit")
+        self.errorFilterEdit.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_4.addWidget(self.errorFilterEdit, 1, 1, 1, 1)
+
+        self.loopbackLabel = QLabel(self.configurationBox)
+        self.loopbackLabel.setObjectName(u"loopbackLabel")
+
+        self.gridLayout_4.addWidget(self.loopbackLabel, 2, 0, 1, 1)
+
+        self.loopbackBox = QComboBox(self.configurationBox)
+        self.loopbackBox.setObjectName(u"loopbackBox")
+
+        self.gridLayout_4.addWidget(self.loopbackBox, 2, 1, 1, 1)
+
+        self.receiveOwnLabel = QLabel(self.configurationBox)
+        self.receiveOwnLabel.setObjectName(u"receiveOwnLabel")
+
+        self.gridLayout_4.addWidget(self.receiveOwnLabel, 3, 0, 1, 1)
+
+        self.receiveOwnBox = QComboBox(self.configurationBox)
+        self.receiveOwnBox.setObjectName(u"receiveOwnBox")
+
+        self.gridLayout_4.addWidget(self.receiveOwnBox, 3, 1, 1, 1)
 
         self.bitrateLabel = QLabel(self.configurationBox)
         self.bitrateLabel.setObjectName(u"bitrateLabel")
 
-        self.gridLayout_4.addWidget(self.bitrateLabel, 0, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.bitrateLabel, 4, 0, 1, 1)
+
+        self.bitrateBox = BitRateBox(self.configurationBox)
+        self.bitrateBox.setObjectName(u"bitrateBox")
+
+        self.gridLayout_4.addWidget(self.bitrateBox, 4, 1, 1, 1)
+
+        self.canFdLabel = QLabel(self.configurationBox)
+        self.canFdLabel.setObjectName(u"canFdLabel")
+
+        self.gridLayout_4.addWidget(self.canFdLabel, 5, 0, 1, 1)
 
         self.canFdBox = QComboBox(self.configurationBox)
         self.canFdBox.setObjectName(u"canFdBox")
 
-        self.gridLayout_4.addWidget(self.canFdBox, 1, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.canFdBox, 5, 1, 1, 1)
 
         self.dataBitrateLabel = QLabel(self.configurationBox)
         self.dataBitrateLabel.setObjectName(u"dataBitrateLabel")
 
-        self.gridLayout_4.addWidget(self.dataBitrateLabel, 2, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.dataBitrateLabel, 6, 0, 1, 1)
+
+        self.dataBitrateBox = BitRateBox(self.configurationBox)
+        self.dataBitrateBox.setObjectName(u"dataBitrateBox")
+
+        self.gridLayout_4.addWidget(self.dataBitrateBox, 6, 1, 1, 1)
 
 
         self.gridLayout_5.addWidget(self.configurationBox, 0, 1, 4, 1)
@@ -158,20 +221,32 @@ class Ui_ConnectDialog(object):
 
     def retranslateUi(self, ConnectDialog):
         ConnectDialog.setWindowTitle(QCoreApplication.translate("ConnectDialog", u"Connect", None))
-        self.selectPluginBox.setTitle(QCoreApplication.translate("ConnectDialog", u"\u63a5\u53e3\u5361\u9009\u9879", None))
-        self.groupBox.setTitle(QCoreApplication.translate("ConnectDialog", u"GUI \u8bbe\u7f6e", None))
+        self.selectPluginBox.setTitle(QCoreApplication.translate("ConnectDialog", u"Select CAN plugin", None))
+        self.groupBox.setTitle(QCoreApplication.translate("ConnectDialog", u"GUI Settings", None))
+#if QT_CONFIG(tooltip)
+        self.ringBufferBox.setToolTip(QCoreApplication.translate("ConnectDialog", u"<html><head/><body><p>Use ring buffer in table view model</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.ringBufferBox.setText(QCoreApplication.translate("ConnectDialog", u"Use ring buffer", None))
+#if QT_CONFIG(tooltip)
+        self.ringBufferLimitBox.setToolTip(QCoreApplication.translate("ConnectDialog", u"<html><head/><body><p>Limit of ring buffer in table view model</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
         self.autoscrollBox.setToolTip(QCoreApplication.translate("ConnectDialog", u"<html><head/><body><p>Scroll to bottom table view on each portion of received frames</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.autoscrollBox.setText(QCoreApplication.translate("ConnectDialog", u"Autoscroll", None))
         self.useConfigurationBox.setText(QCoreApplication.translate("ConnectDialog", u"Custom configuration", None))
-        self.configurationBox.setTitle(QCoreApplication.translate("ConnectDialog", u"\u5177\u4f53\u914d\u7f6e", None))
-        self.canFdLabel.setText(QCoreApplication.translate("ConnectDialog", u"CAN FD", None))
+        self.configurationBox.setTitle(QCoreApplication.translate("ConnectDialog", u"Specify Configuration", None))
+        self.rawFilterLabel.setText(QCoreApplication.translate("ConnectDialog", u"RAW Filter", None))
+        self.errorFilterLabel.setText(QCoreApplication.translate("ConnectDialog", u"Error Filter", None))
+        self.errorFilterEdit.setPlaceholderText(QCoreApplication.translate("ConnectDialog", u"FrameError bits", None))
+        self.loopbackLabel.setText(QCoreApplication.translate("ConnectDialog", u"Loopback", None))
+        self.receiveOwnLabel.setText(QCoreApplication.translate("ConnectDialog", u"Receive Own", None))
         self.bitrateLabel.setText(QCoreApplication.translate("ConnectDialog", u"Bitrate", None))
+        self.canFdLabel.setText(QCoreApplication.translate("ConnectDialog", u"CAN FD", None))
         self.dataBitrateLabel.setText(QCoreApplication.translate("ConnectDialog", u"Data Bitrate", None))
         self.cancelButton.setText(QCoreApplication.translate("ConnectDialog", u"Cancel", None))
         self.okButton.setText(QCoreApplication.translate("ConnectDialog", u"OK", None))
-        self.specifyInterfaceNameBox.setTitle(QCoreApplication.translate("ConnectDialog", u"\u5177\u4f53\u63a5\u53e3\u5361\u540d\u79f0", None))
-        self.deviceInfoBox.setTitle(QCoreApplication.translate("ConnectDialog", u"CAN\u63a5\u53e3\u5c5e\u6027\u5217\u8868", None))
+        self.specifyInterfaceNameBox.setTitle(QCoreApplication.translate("ConnectDialog", u"Specify CAN interface name", None))
+        self.deviceInfoBox.setTitle(QCoreApplication.translate("ConnectDialog", u"CAN Interface Properties", None))
     # retranslateUi
 
