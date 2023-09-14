@@ -19,9 +19,15 @@ from receivedframesmodel import ReceivedFramesModel
 def frame_flags(frame):
     result = " --- "
     if frame.hasBitrateSwitch():
-        result[1] = 'B' # (就是区分CAN 还是 CAN-FD)
+        # result[1] = 'B' # 区分CAN 还是 CAN-FD
+        result = list(result)
+        result[1] = 'B'
+        result = ''.join(result)
     if frame.hasErrorStateIndicator():
-        result[2] = 'E' # 通过错误状态指示器来提醒通信节点发现问题
+        result = list(result)
+        result[2] = 'E'
+        result = ''.join(result)
+        # result[2] = 'E' # 通过错误状态指示器来提醒通信节点发现问题
     if frame.hasLocalEcho():
         result[3] = 'L' # 输入后 立即看到屏幕显示（默认开启，但 在输入敏感信息（如密码）时，为了安全性考虑（可能会被禁用）
     return result
@@ -313,12 +319,14 @@ class MainWindow(QMainWindow):
                 data = self.m_can_device.interpretErrorFrame(frame)
             else:
                 data = frame.payload().toHex(' ').toUpper() # 将frame.payload()返回的字节序列转换为十六进制字符串，并使用空格分隔每两个字符。然后，将得到的字符串转换为大写形式
+            print("data:",data,type(data))
 
             # 获取帧的时间戳，并将秒数和微秒数格式化成字符串，并赋值给time变量。获取帧的标志位，并赋值给flags变量
             secs = frame.timeStamp().seconds()
             microsecs = frame.timeStamp().microSeconds() / 100  #  获取微秒数，并将其除以100得到小数位
             time = f"{secs:>10}.{microsecs:0>4}"  # 格式化为字符串，秒数占据10个字符的宽度，微秒数占据4个字符的宽度
             flags = frame_flags(frame) #  获取frame的标志
+            print("flags:",flags,type(flags))
 
             id = f"{frame.frameId():x}" # 在 f-string 中，我们可以使用冒号:来指定格式化选项,x 表示16进制
             dlc = f"{frame.payload().size()}"
