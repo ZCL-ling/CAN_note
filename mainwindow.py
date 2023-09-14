@@ -29,7 +29,10 @@ def frame_flags(frame):
         result = ''.join(result)
         # result[2] = 'E' # 通过错误状态指示器来提醒通信节点发现问题
     if frame.hasLocalEcho():
-        result[3] = 'L' # 输入后 立即看到屏幕显示（默认开启，但 在输入敏感信息（如密码）时，为了安全性考虑（可能会被禁用）
+        result = list(result)
+        result[3] = 'L'
+        result = ''.join(result)
+        # result[3] = 'L' # 输入后 立即看到屏幕显示（默认开启，但 在输入敏感信息（如密码）时，为了安全性考虑（可能会被禁用）
     return result
 # 比特率切换是一种在 CAN 网络中改变通信速率的机制。
 # 通过比特率切换，可以调整数据传输的速度，以适应不同的应用场景和要求。
